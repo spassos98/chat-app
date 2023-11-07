@@ -1,5 +1,7 @@
 let START_POS = -1;
 
+console.log("Connecting to module");
+
 async function getChatStatus() {
   const response = await fetch("http://127.0.0.1:3000/message");
   const value = await response.json();
@@ -11,7 +13,7 @@ async function addMessage(message) {
   await postJSON(data);
 }
 
-async function sendMessage() {
+export async function sendMessage() {
   let message = document.getElementById("message-box").value;
   document.getElementById("message-box").value = "";
   addMessage(message).then((_) => {
@@ -19,7 +21,7 @@ async function sendMessage() {
   });
 }
 
-async function buildChat(limit = -1) {
+export async function buildChat(limit = -1) {
   await getChatStatus().then((chatFromBack) => {
     if (limit >= 0) {
       START_POS = chatFromBack.length - limit;
@@ -52,3 +54,19 @@ async function postJSON(data) {
     console.error("Error:", error);
   }
 }
+
+buildChat(3);
+document
+  .getElementById("message-button")
+  .addEventListener("click", () => sendMessage());
+
+const webSocket = new WebSocket("ws://localhost:8080");
+
+webSocket.onopen = (event) => {
+  webSocket.send("Here's some text that the server is urgently awaiting!");
+};
+
+webSocket.onmessage = (event) => {
+  buildChat();
+  console.log(event.data);
+};

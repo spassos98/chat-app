@@ -1,4 +1,5 @@
 import { IncomingMessage, ServerResponse, createServer } from "http";
+import { WebSocket } from "ws";
 
 const hostname = "127.0.0.1";
 const port = 3000;
@@ -33,6 +34,9 @@ function processRequest(
       const messageObj = JSON.parse(reqMessage.body);
       chat.push(messageObj.message);
       console.log("adding message to chat");
+      wss.clients.forEach((client) => {
+        client.send("update-chat");
+      });
       res.end();
     } else if (req.method == "GET") {
       console.log("Retrieving chat status");
@@ -79,4 +83,20 @@ const server = createServer((req, res) => {
 
 server.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
+});
+
+const wss = new WebSocket.Server({ port: 8080 });
+
+console.log("Creating web socket server");
+wss.on("connection", (ws: WebSocket) => {
+  console.log("New client connected");
+
+  ws.on("message", (message: string) => {
+    console.log(`Received message: ${message}`);
+    ws.send(`Server received your message: ${message}`);
+  });
+
+  ws.on("close", () => {
+    console.log("Client disconnected");
+  });
 });
