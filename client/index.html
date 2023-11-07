@@ -6,11 +6,6 @@
 </head>
 
 <body>
-  <script src="script.js"></script>
-
-  <script>
-    buildChat(3);
-  </script>
   <div>
     <h2>Chat</h2>
     <div id="chatbox" class="chatbox"></div>
@@ -18,7 +13,9 @@
   <div>
     <textarea id="message-box" cols="50" rows="3"></textarea>
   </div>
-  <button onclick="sendMessage()">Send</button>
+  <button id="message-button">Send</button>
+
+  <script type="module" src="index.js"></script>
 </body>
 
 </html>
