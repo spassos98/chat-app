@@ -4,13 +4,9 @@ const http_1 = require("http");
 const ws_1 = require("ws");
 const database_1 = require("./database");
 const DB_FILE = "./database/ladata.db";
-const db = (0, database_1.initDatabase)(DB_FILE);
-// let numM = getNumMessages();
-// inserMessage({ id: 1, message: "hola", timestamp: new Date().toISOString() });
-// console.log({ numM });
+(0, database_1.initDatabase)(DB_FILE);
 const hostname = "127.0.0.1";
 const port = 3000;
-const chat = [];
 function processRequest(reqMessage, res) {
     const req = reqMessage.req;
     const url = req.url;

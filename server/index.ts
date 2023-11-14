@@ -8,13 +8,9 @@ import {
 } from "./database";
 
 const DB_FILE = "./database/ladata.db";
-const db = initDatabase(DB_FILE);
-// let numM = getNumMessages();
-// inserMessage({ id: 1, message: "hola", timestamp: new Date().toISOString() });
-// console.log({ numM });
+initDatabase(DB_FILE);
 const hostname = "127.0.0.1";
 const port = 3000;
-const chat: string[] = [];
 
 interface RequestMessage {
   req: IncomingMessage;
