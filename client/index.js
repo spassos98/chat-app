@@ -55,7 +55,7 @@ async function postJSON(data) {
   }
 }
 
-buildChat(3);
+buildChat(10);
 document
   .getElementById("message-button")
   .addEventListener("click", () => sendMessage());

@@ -2,6 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const http_1 = require("http");
 const ws_1 = require("ws");
+const database_1 = require("./database");
+const DB_FILE = "./database/ladata.db";
+const db = (0, database_1.initDatabase)(DB_FILE);
+// let numM = getNumMessages();
+// inserMessage({ id: 1, message: "hola", timestamp: new Date().toISOString() });
+// console.log({ numM });
 const hostname = "127.0.0.1";
 const port = 3000;
 const chat = [];
@@ -24,8 +30,14 @@ function processRequest(reqMessage, res) {
             });
             res.write(JSON.stringify({ body: "hola body" }));
             const messageObj = JSON.parse(reqMessage.body);
-            chat.push(messageObj.message);
-            console.log("adding message to chat");
+            console.log("Adding message to db");
+            const id = (0, database_1.getNumMessages)() + 1;
+            (0, database_1.insertMessage)({
+                id: id,
+                message: messageObj.message,
+                timestamp: new Date().toISOString(),
+            });
+            console.log("Sending update message to WS");
             wss.clients.forEach((client) => {
                 client.send("update-chat");
             });
@@ -37,7 +49,8 @@ function processRequest(reqMessage, res) {
                 "Content-Type": "application/json",
                 "Access-Control-Allow-Origin": "*",
             });
-            res.write(JSON.stringify({ message: chat }));
+            const messages = (0, database_1.getMessages)();
+            res.write(JSON.stringify({ message: messages }));
             res.end();
         }
     }

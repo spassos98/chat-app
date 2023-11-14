@@ -1,6 +1,17 @@
 import { IncomingMessage, ServerResponse, createServer } from "http";
 import { WebSocket } from "ws";
+import {
+  getMessages,
+  getNumMessages,
+  initDatabase,
+  insertMessage,
+} from "./database";
 
+const DB_FILE = "./database/ladata.db";
+const db = initDatabase(DB_FILE);
+// let numM = getNumMessages();
+// inserMessage({ id: 1, message: "hola", timestamp: new Date().toISOString() });
+// console.log({ numM });
 const hostname = "127.0.0.1";
 const port = 3000;
 const chat: string[] = [];
@@ -32,8 +43,14 @@ function processRequest(
       });
       res.write(JSON.stringify({ body: "hola body" }));
       const messageObj = JSON.parse(reqMessage.body);
-      chat.push(messageObj.message);
-      console.log("adding message to chat");
+      console.log("Adding message to db");
+      const id = getNumMessages() + 1;
+      insertMessage({
+        id: id,
+        message: messageObj.message,
+        timestamp: new Date().toISOString(),
+      });
+      console.log("Sending update message to WS");
       wss.clients.forEach((client) => {
         client.send("update-chat");
       });
@@ -44,7 +61,8 @@ function processRequest(
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
       });
-      res.write(JSON.stringify({ message: chat }));
+      const messages = getMessages();
+      res.write(JSON.stringify({ message: messages }));
       res.end();
     }
   } else if (url == "/about") {
