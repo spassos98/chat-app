@@ -59,6 +59,8 @@ buildChat(10);
 document
   .getElementById("message-button")
   .addEventListener("click", () => sendMessage());
+let user = ""
+updateUser(user);
 
 const webSocket = new WebSocket("ws://localhost:8080");
 
@@ -70,3 +72,16 @@ webSocket.onmessage = (event) => {
   buildChat();
   console.log(event.data);
 };
+
+function updateUser(username){
+  document.getElementById("username-value").innerHTML = username;
+}
+
+document.getElementById("user-form").addEventListener("submit", function(e) {
+  e.preventDefault()
+  console.log("Target data");
+  const formData = new FormData(e.target);
+  const formObj = Object.fromEntries(formData);
+  updateUser(formObj.name);
+})
+
