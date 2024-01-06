@@ -1,15 +1,16 @@
 let START_POS = -1;
+let USERNAME = '';
 
 console.log("Connecting to module");
 
 async function getChatStatus() {
   const response = await fetch("http://127.0.0.1:3000/message");
   const value = await response.json();
-  return value.message;
+  return value.chat;
 }
 
 async function addMessage(message) {
-  const data = { message: message };
+  const data = { message: message, user: USERNAME};
   await postJSON(data);
 }
 
@@ -23,6 +24,7 @@ export async function sendMessage() {
 
 export async function buildChat(limit = -1) {
   await getChatStatus().then((chatFromBack) => {
+    console.log({chatFromBack})
     if (limit >= 0) {
       START_POS = chatFromBack.length - limit;
       START_POS = Math.max(0, START_POS);
@@ -30,9 +32,10 @@ export async function buildChat(limit = -1) {
     let chatMessagesHtml = "<ul>\n";
     let i = START_POS;
     for (i; i < chatFromBack.length; i += 1) {
-      chatMessagesHtml += `<li>${chatFromBack[i]}</li>\n`;
+      chatMessagesHtml += `<li><b>${chatFromBack[i].user ?? ''}</b>: ${chatFromBack[i].message}</li>\n`;
     }
     chatMessagesHtml += "\n</ul>";
+    console.log({chatMessagesHtml});
     document.getElementById("chatbox").innerHTML = chatMessagesHtml;
   });
 }
@@ -74,6 +77,7 @@ webSocket.onmessage = (event) => {
 };
 
 function updateUser(username){
+  USERNAME = username;
   document.getElementById("username-value").innerHTML = username;
 }
 

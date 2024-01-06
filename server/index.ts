@@ -45,6 +45,7 @@ function processRequest(
         id: id,
         message: messageObj.message,
         timestamp: new Date().toISOString(),
+        user: messageObj.user
       });
       console.log("Sending update message to WS");
       wss.clients.forEach((client) => {
@@ -58,7 +59,7 @@ function processRequest(
         "Access-Control-Allow-Origin": "*",
       });
       const messages = getMessages();
-      res.write(JSON.stringify({ message: messages }));
+      res.write(JSON.stringify({ chat: messages }));
       res.end();
     }
   } else if (url == "/about") {

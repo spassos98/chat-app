@@ -4,6 +4,7 @@ export interface Message {
   id: number;
   message: string;
   timestamp: string;
+  user: string;
 }
 
 let db = new Database("foobar.db", { verbose: console.log });
@@ -19,20 +20,19 @@ export function initDatabase(DB_FILE: string) {
 
 function createTables() {
   const createMessagesTableSQL =
-    "CREATE TABLE IF NOT EXISTS Messages('id' integer PRIMARY KEY, 'message' varchar, 'timestamp' varchar);";
+    "CREATE TABLE IF NOT EXISTS Messages('id' integer PRIMARY KEY, 'message' varchar, 'timestamp' varchar, 'user' varchar);";
 
   const createMessagesTable = db.prepare(createMessagesTableSQL);
 
   const createMessagesTableT = db.transaction(() => {
     createMessagesTable.run();
   });
-
   createMessagesTableT();
 }
 
 export function insertMessage(message: Message) {
   const insertMessageSQL =
-    "INSERT INTO Messages (id, message, timestamp) VALUES (@id, @message, @timestamp)";
+    "INSERT INTO Messages (id, message, timestamp, user) VALUES (@id, @message, @timestamp, @user)";
   const insertMessageStmt = db.prepare(insertMessageSQL);
 
   const insertMessageT = db.transaction((message: Message) => {
@@ -41,13 +41,13 @@ export function insertMessage(message: Message) {
   insertMessageT(message);
 }
 
-export function getMessages() {
-  const getMessagesSQL = "SELECT message from Messages";
-  const messages = db
+export function getMessages(){
+  const getMessagesSQL = "SELECT user, message, timestamp from Messages";
+  const rows: (Omit<Message, 'id'>)[] = db
     .prepare(getMessagesSQL)
     .all()
-    .map((row: any) => row.message);
-  return messages;
+    .map((row: any) => row);
+  return rows;
 }
 
 export function getNumMessages() {
