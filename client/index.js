@@ -1,7 +1,21 @@
 let START_POS = -1;
 let USERNAME = '';
+let COOKIE_USERNAME = 'username';
 
 console.log("Connecting to module");
+
+function setUsernameCookie(username){
+  document.cookie = `username=${username}; SameSite=None; Secure`;
+}
+
+function getUsernameCookie(){
+  const value = document.cookie
+  .split("; ")
+  .find((row) => row.startsWith(`${COOKIE_USERNAME}=`))
+  ?.split("=")[1];
+
+  return value ?? '';
+}
 
 async function getChatStatus() {
   const response = await fetch("http://127.0.0.1:3000/message");
@@ -62,7 +76,7 @@ buildChat(10);
 document
   .getElementById("message-button")
   .addEventListener("click", () => sendMessage());
-let user = ""
+let user = getUsernameCookie();
 updateUser(user);
 
 const webSocket = new WebSocket("ws://localhost:8080");
@@ -78,6 +92,7 @@ webSocket.onmessage = (event) => {
 
 function updateUser(username){
   USERNAME = username;
+  setUsernameCookie(username);
   document.getElementById("username-value").innerHTML = username;
 }
 
