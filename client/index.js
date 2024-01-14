@@ -1,21 +1,9 @@
+import { getUsernameCookie } from './user.js'
+
 let START_POS = -1;
-let USERNAME = '';
-let COOKIE_USERNAME = 'username';
 
 console.log("Connecting to module");
 
-function setUsernameCookie(username){
-  document.cookie = `username=${username}; SameSite=None; Secure`;
-}
-
-function getUsernameCookie(){
-  const value = document.cookie
-  .split("; ")
-  .find((row) => row.startsWith(`${COOKIE_USERNAME}=`))
-  ?.split("=")[1];
-
-  return value ?? '';
-}
 
 async function getChatStatus() {
   const response = await fetch("http://127.0.0.1:3000/message");
@@ -24,7 +12,8 @@ async function getChatStatus() {
 }
 
 async function addMessage(message) {
-  const data = { message: message, user: USERNAME};
+  const username = getUsernameCookie();
+  const data = { message: message, user: username };
   await postJSON(data);
 }
 
@@ -38,7 +27,7 @@ export async function sendMessage() {
 
 export async function buildChat(limit = -1) {
   await getChatStatus().then((chatFromBack) => {
-    console.log({chatFromBack})
+    console.log({ chatFromBack })
     if (limit >= 0) {
       START_POS = chatFromBack.length - limit;
       START_POS = Math.max(0, START_POS);
@@ -49,7 +38,7 @@ export async function buildChat(limit = -1) {
       chatMessagesHtml += `<li><b>${chatFromBack[i].user ?? ''}</b>: ${chatFromBack[i].message}</li>\n`;
     }
     chatMessagesHtml += "\n</ul>";
-    console.log({chatMessagesHtml});
+    console.log({ chatMessagesHtml });
     document.getElementById("chatbox").innerHTML = chatMessagesHtml;
   });
 }
@@ -76,8 +65,6 @@ buildChat(10);
 document
   .getElementById("message-button")
   .addEventListener("click", () => sendMessage());
-let user = getUsernameCookie();
-updateUser(user);
 
 const webSocket = new WebSocket("ws://localhost:8080");
 
@@ -89,18 +76,4 @@ webSocket.onmessage = (event) => {
   buildChat();
   console.log(event.data);
 };
-
-function updateUser(username){
-  USERNAME = username;
-  setUsernameCookie(username);
-  document.getElementById("username-value").innerHTML = username;
-}
-
-document.getElementById("user-form").addEventListener("submit", function(e) {
-  e.preventDefault()
-  console.log("Target data");
-  const formData = new FormData(e.target);
-  const formObj = Object.fromEntries(formData);
-  updateUser(formObj.name);
-})
 
