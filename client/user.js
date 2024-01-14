@@ -33,12 +33,4 @@ export function updateUser(username) {
   document.getElementById("username-value").innerHTML = username;
 }
 
-// document.getElementById("user-form").addEventListener("submit", function(e) {
-//   e.preventDefault()
-//   const formData = new FormData(e.target);
-//   const formObj = Object.fromEntries(formData);
-//   updateUser(formObj.name);
-// })
-//
-
 setupUser();
