@@ -11,9 +11,15 @@ async function getChatStatus() {
   return value.chat;
 }
 
+async function getRoomsInfo() {
+  const response = await fetch("http://127.0.0.1:3000/room");
+  const value = await response.json();
+  return value.rooms;
+}
+
 async function addMessage(message) {
   const username = getUsernameCookie();
-  const data = { message: message, user: username };
+  const data = { message: message, user: username, roomId: 1 };
   await postJSON(data);
 }
 
@@ -26,8 +32,7 @@ export async function sendMessage() {
 }
 
 export async function buildChat(limit = -1) {
-  await getChatStatus().then((chatFromBack) => {
-    console.log({ chatFromBack })
+  getChatStatus().then((chatFromBack) => {
     if (limit >= 0) {
       START_POS = chatFromBack.length - limit;
       START_POS = Math.max(0, START_POS);
@@ -38,13 +43,22 @@ export async function buildChat(limit = -1) {
       chatMessagesHtml += `<li><b>${chatFromBack[i].user ?? ''}</b>: ${chatFromBack[i].message}</li>\n`;
     }
     chatMessagesHtml += "\n</ul>";
-    console.log({ chatMessagesHtml });
     document.getElementById("chatbox").innerHTML = chatMessagesHtml;
   });
 }
 
+export async function buildRoomList() {
+  getRoomsInfo().then((roomsInfo) => {
+    let roomInfoHtml = "<ul>\n";
+    for (let i = 0; i < roomsInfo.length; i += 1) {
+      roomInfoHtml += `<li> <a href="#${roomsInfo[i].id}">${roomsInfo[i].name}</a></li>\n`;
+    }
+    roomInfoHtml += "\n</ul>";
+    document.getElementById("room-list").innerHTML = roomInfoHtml;
+  });
+}
+
 async function postJSON(data) {
-  console.log("Sending data to server");
   try {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -61,7 +75,12 @@ async function postJSON(data) {
   }
 }
 
+function updateChatTitle(roomNumber){
+  document.getElementById("chat-title").innerHTML = `Chat for room ${roomNumber[1]}`;
+}
+
 buildChat(10);
+buildRoomList();
 document
   .getElementById("message-button")
   .addEventListener("click", () => sendMessage());
@@ -74,6 +93,21 @@ webSocket.onopen = (event) => {
 
 webSocket.onmessage = (event) => {
   buildChat();
-  console.log(event.data);
 };
 
+// hash utilities, will move to a different module
+function getHash() {
+  const theHash = window.location.hash;
+  if (theHash.length == 0) { theHash = ""; }
+  return theHash;
+}
+
+window.addEventListener("hashchange", function() {
+  const hashValue = getHash();
+  updateChatTitle(hashValue)
+});
+
+window.addEventListener("DOMContentLoaded", function(ev) {
+  const hashValue = getHash();
+  updateChatTitle(hashValue)
+});

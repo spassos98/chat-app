@@ -32,7 +32,8 @@ function processRequest(reqMessage, res) {
                 id: id,
                 message: messageObj.message,
                 timestamp: new Date().toISOString(),
-                user: messageObj.user
+                user: messageObj.user,
+                roomid: messageObj.roomId,
             });
             console.log("Sending update message to WS");
             wss.clients.forEach((client) => {
@@ -51,28 +52,17 @@ function processRequest(reqMessage, res) {
             res.end();
         }
     }
-    else if (url == "/about") {
-        res.writeHead(200, { "Content-Type": "text/html" });
-        res.write("<h2>About us</h2>");
-        res.end();
-    }
-    else if (url == "/payment") {
-        res.writeHead(200, { "Content-Type": "text/html" });
-        res.write("<h1>Big money wow</h1>");
-        res.end();
-    }
-    else if (url == "/") {
-        res.writeHead(200, { "Content-Type": "text/html" });
-        res.write("<h1>Hello world!</h1>");
-        res.end();
-    }
-    else if (url == "/json") {
-        res.writeHead(200, {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-        });
-        res.write(JSON.stringify({ body: "hola body" }));
-        res.end();
+    else if (url == '/room') {
+        if (req.method == "GET") {
+            console.log("Retrieving room information");
+            res.writeHead(200, {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+            });
+            const roomInfo = (0, database_1.getRooms)();
+            res.write(JSON.stringify({ rooms: roomInfo }));
+            res.end();
+        }
     }
     else {
         res.statusCode = 404;
