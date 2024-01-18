@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRooms = exports.getNumMessages = exports.getMessages = exports.insertMessage = exports.initDatabase = void 0;
+exports.getRooms = exports.getNumMessages = exports.getMessagesForRoom = exports.getMessages = exports.insertMessage = exports.initDatabase = void 0;
 const better_sqlite3_1 = __importDefault(require("better-sqlite3"));
 let db = new better_sqlite3_1.default("foobar.db", { verbose: console.log });
 function initDatabase(DB_FILE) {
@@ -46,6 +46,15 @@ function getMessages() {
     return rows;
 }
 exports.getMessages = getMessages;
+function getMessagesForRoom(roomId) {
+    const getMessagesSQL = `SELECT user, message, timestamp, roomid from Messages where roomid = ${roomId}`;
+    const rows = db
+        .prepare(getMessagesSQL)
+        .all()
+        .map((row) => row);
+    return rows;
+}
+exports.getMessagesForRoom = getMessagesForRoom;
 function getNumMessages() {
     const getNumMessagesSQL = "SELECT count(*) as numMessages FROM Messages";
     const getNumMessagesStmt = db.prepare(getNumMessagesSQL);

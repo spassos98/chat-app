@@ -63,6 +63,15 @@ export function getMessages() {
   return rows;
 }
 
+export function getMessagesForRoom(roomId: number) {
+  const getMessagesSQL = `SELECT user, message, timestamp, roomid from Messages where roomid = ${roomId}`;
+  const rows: (Omit<Message, 'id'>)[] = db
+    .prepare(getMessagesSQL)
+    .all()
+    .map((row: any) => row);
+  return rows;
+}
+
 export function getNumMessages() {
   const getNumMessagesSQL = "SELECT count(*) as numMessages FROM Messages";
   const getNumMessagesStmt = db.prepare(getNumMessagesSQL);

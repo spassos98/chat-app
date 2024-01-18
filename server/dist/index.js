@@ -18,7 +18,14 @@ function processRequest(reqMessage, res) {
         });
         res.end();
     }
-    if (url == "/message") {
+    const urlPaths = url === null || url === void 0 ? void 0 : url.split("/").slice(1);
+    if (urlPaths == undefined) {
+        res.statusCode = 404;
+        res.end("Not found");
+        return;
+    }
+    if (urlPaths[0] === 'message') {
+        console.log("In message");
         if (req.method == "POST") {
             res.writeHead(200, {
                 "Content-Type": "application/json",
@@ -26,6 +33,7 @@ function processRequest(reqMessage, res) {
             });
             res.write(JSON.stringify({ body: "hola body" }));
             const messageObj = JSON.parse(reqMessage.body);
+            console.log({ messageObj });
             console.log("Adding message to db");
             const id = (0, database_1.getNumMessages)() + 1;
             (0, database_1.insertMessage)({
@@ -41,13 +49,13 @@ function processRequest(reqMessage, res) {
             });
             res.end();
         }
-        else if (req.method == "GET") {
-            console.log("Retrieving chat status");
+        else if (req.method == "GET" && urlPaths[1] !== undefined) {
+            console.log("Retrieving chat status", urlPaths[1]);
             res.writeHead(200, {
                 "Content-Type": "application/json",
                 "Access-Control-Allow-Origin": "*",
             });
-            const messages = (0, database_1.getMessages)();
+            const messages = (0, database_1.getMessagesForRoom)(Number(urlPaths[1]));
             res.write(JSON.stringify({ chat: messages }));
             res.end();
         }

@@ -2,6 +2,7 @@ import { IncomingMessage, ServerResponse, createServer } from "http";
 import { WebSocket } from "ws";
 import {
   getMessages,
+  getMessagesForRoom,
   getNumMessages,
   getRooms,
   initDatabase,
@@ -32,7 +33,15 @@ function processRequest(
     });
     res.end();
   }
-  if (url == "/message") {
+
+  const urlPaths = url?.split("/").slice(1);
+  if (urlPaths == undefined) {
+    res.statusCode = 404;
+    res.end("Not found");
+    return;
+  }
+  if (urlPaths[0] === 'message') {
+    console.log("In message")
     if (req.method == "POST") {
       res.writeHead(200, {
         "Content-Type": "application/json",
@@ -40,6 +49,7 @@ function processRequest(
       });
       res.write(JSON.stringify({ body: "hola body" }));
       const messageObj = JSON.parse(reqMessage.body);
+      console.log({ messageObj });
       console.log("Adding message to db");
       const id = getNumMessages() + 1;
       insertMessage({
@@ -54,13 +64,13 @@ function processRequest(
         client.send("update-chat");
       });
       res.end();
-    } else if (req.method == "GET") {
-      console.log("Retrieving chat status");
+    } else if (req.method == "GET" && urlPaths[1] !== undefined) {
+      console.log("Retrieving chat status", urlPaths[1]);
       res.writeHead(200, {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
       });
-      const messages = getMessages();
+      const messages = getMessagesForRoom(Number(urlPaths[1]));
       res.write(JSON.stringify({ chat: messages }));
       res.end();
     }
