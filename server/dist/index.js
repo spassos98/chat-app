@@ -89,7 +89,7 @@ const server = (0, http_1.createServer)((req, res) => {
 server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
 });
-const wss = new ws_1.WebSocket.Server({ port: 8080 });
+const wss = new ws_1.WebSocket.Server({ port: 8080, path: "/ws" });
 console.log("Creating web socket server");
 wss.on("connection", (ws) => {
     console.log("New client connected");
