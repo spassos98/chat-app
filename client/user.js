@@ -16,7 +16,7 @@ export function setupUser() {
 }
 
 function setUsernameCookie(username) {
-  document.cookie = `username=${username}; SameSite=None; Secure; path=/`;
+  document.cookie = `username=${username}; SameSite=Lax; path=/`;
 }
 
 export function getUsernameCookie() {

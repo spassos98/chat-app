@@ -4,14 +4,25 @@ let START_POS = -1;
 
 console.log("Connecting to module");
 
+function isHostanmeLocal() {
+  const hostname = window.location.hostname;
+  if (hostname == '127.0.0.1' || hostname == 'localhost') return true;
+  return false;
+}
+
+async function fetchRedirect(path, data) {
+  const hostname = window.location.hostname;
+  return fetch(`http://${hostname}${isHostanmeLocal() ? ':3000' : ''}${path}`, data);
+}
+
 async function getChatStatus(roomId) {
-  const response = await fetch(`http://127.0.0.1:3000/message/${roomId}`);
+  const response = await fetchRedirect(`/message/${roomId}`);
   const value = await response.json();
   return value.chat;
 }
 
 async function getRoomsInfo() {
-  const response = await fetch("http://127.0.0.1:3000/room");
+  const response = await fetchRedirect("/room");
   const value = await response.json();
   return value.rooms;
 }
@@ -30,10 +41,10 @@ export async function sendMessage() {
   });
 }
 
-function getRoomId(){
+function getRoomId() {
   const hashValue = getHash();
-  if(hashValue == "") return "";
-  else{
+  if (hashValue == "") return "";
+  else {
     return hashValue[1];
   }
 }
@@ -105,7 +116,7 @@ async function postJSON(data) {
       headers: myHeaders,
       body: JSON.stringify(data),
     };
-    const response = await fetch("http://127.0.0.1:3000/message", config);
+    const response = await fetchRedirect("/message", config);
 
     await response.json();
   } catch (error) {
@@ -117,7 +128,7 @@ function updateChatTitle(roomNumber) {
   document.getElementById("chat-title").innerHTML = `Chat for room ${roomNumber[1]}`;
 }
 
-const webSocket = new WebSocket("ws://localhost:8080");
+const webSocket = new WebSocket(`ws://${window.location.hostname}:8080/ws`);
 
 webSocket.onopen = (event) => {
   webSocket.send("Here's some text that the server is urgently awaiting!");
