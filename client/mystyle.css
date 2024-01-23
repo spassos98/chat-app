@@ -3,7 +3,35 @@
   /* border: solid; */
 }
 
-.username-form {
-  margin-bottom: 10px;
-  margin-top: 10px;
+.app-title-container {
+  height: 20vh;
+}
+
+.select-user-container {
+  margin: 0 auto;
+  width: 50%;
+  height: 30vh;
+}
+
+.select-user-text {
+  text-align: center;
+}
+
+.form-container{
+  display: flex;
+  justify-content: center;
+}
+
+.submit-container{
+  display: flex;
+  justify-content: right;
+}
+
+.wife-image-container{
+  display: flex;
+  justify-content: center;
+}
+
+.wife-image{
+  width: 50%
 }
