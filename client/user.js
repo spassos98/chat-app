@@ -11,6 +11,7 @@ export function setupUser() {
       const formData = new FormData(e.target);
       const formObj = Object.fromEntries(formData);
       updateUser(formObj.name);
+      window.location.href = window.location.href + 'chat-rooms';
     })
   }
 }
@@ -30,7 +31,10 @@ export function getUsernameCookie() {
 
 export function updateUser(username) {
   setUsernameCookie(username);
-  document.getElementById("username-value").innerHTML = username;
+  const userNameValue = document.getElementById("username-value");
+  if (userNameValue !== null) {
+    userNameValue.innerHTML = username;
+  }
 }
 
 setupUser();
