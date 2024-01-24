@@ -6,27 +6,21 @@
 </head>
 
 <body>
-  <div>
-    <div>
-      <h1 class="title">Elige una sala</h1>
-    </div>
+  <div class="app-title-container">
+    <h1>Super cool chat app</h1>
   </div>
 
-  <div>
-    <div>
-      <h2 class="title">Bienvenido</h2>
-      <p style="margin: 0; padding-left: 0.5em;" id="username-value"></p>
-    </div>
+  <div class="greeting-container-user">
+    <b class="title">Welcome</b>
+    <p style="margin: 0; padding-left: 0.5em; color: blue;" id="username-value"></p>
   </div>
 
-  <div id="room-list"></div>
-  <div id="chat">
-    <!-- <h2 id="chat-title">Chat</h2> -->
-    <!-- <div id="chatbox" class="chatbox"></div> -->
-    <!-- <div> -->
-    <!--   <textarea id="message-box" cols="50" rows="3"></textarea> -->
-    <!-- </div> -->
-    <!-- <button id="message-button">Send</button> -->
+
+  <div class="room-list-container">
+    <p>Choose a room</p>
+    <div id="room-list" class="room-list"></div>
+    <div id="chat">
+    </div>
   </div>
   <script type="module" src="../user.js"></script>
   <script type="module" src="../index.js"></script>
