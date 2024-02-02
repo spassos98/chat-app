@@ -7,28 +7,33 @@
 </head>
 
 <body>
-  <div class="app-title-container">
-    <h1>Super cool chat app</h1>
-  </div>
 
-  <div class="select-user-container">
-    <div class="select-user-text">
-      <h3>Choose your user</h3>
+  <div style="display: flex; height: 100vh;">
+    <div style="width: 50%; border: 1px solid;">
+      Imagen
     </div>
-    <div class="form-container">
-      <form action="chat-rooms" id="user-form">
-        <input id="name" name="name" value="" placeholder="user">
-        <div class="submit-container">
-          <input type="submit" value="Submit">
+    <div style="width: 50%; border: 1px solid; padding: 5% 13% 18% 13%;">
+      <div style="border: 1px solid black;" class="app-title-container">
+        <h2>Super cool chat app</h2>
+      </div>
+      <div style="height: 100%; background: cyan; margin-top: 20%;">
+        <div class="select-user-container">
+          <div style="padding: 20% 3%" class="select-user-text">
+            <h3>Choose your user</h3>
+          </div>
+          <div class="form-container">
+            <form action="chat-rooms" id="user-form">
+              <input id="name" name="name" value="" placeholder="user">
+              <div class="submit-container">
+                <input type="submit" value="Submit">
+              </div>
+            </form>
+          </div>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 
-  <div class="wife-image-container">
-    <img class="wife-image" src="https://pbs.twimg.com/media/GEa2SpIbMAESNWA?format=jpg&name=large"
-      alt="You want me a wife">
-  </div>
   <script type="module" src="user.js"></script>
 </body>
 
