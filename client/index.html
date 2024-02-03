@@ -9,26 +9,22 @@
 <body>
 
   <div style="display: flex; height: 100vh;">
-    <div style="width: 50%; border: 1px solid;">
-      Imagen
-    </div>
-    <div style="width: 50%; border: 1px solid;">
-      <!-- <div style="border: 1px solid black; height: 30%;" class="app-title-container"> -->
-      <div style="border: 1px solid black; height: 30%; padding-top: 8%;">
-        <div style="text-align: center;">
+    <div style="width: 100%; border: 1px solid;">
+      <div style="height: 30%; display: flex;">
+        <div style="text-align: center; margin: auto;">
           <h2>Super cool chat app</h2>
         </div>
       </div>
-      <div style="height: 70%; padding: 5% 30% 12% 30%;">
-        <div style="background-color: cyan; height: 100%;">
+      <div style="height: 70%;">
+        <div style="background-color: cyan; height: 80%; min-width: 300px; width: 20%; margin: auto;">
           <div class="select-user-text" style="padding: 20%;">
             <h3>Choose your user</h3>
           </div>
           <div class="form-container">
             <form action="chat-rooms" id="user-form">
               <input id="name" name="name" value="" placeholder="user" style="margin: auto;">
-              <div class="submit-container" style="padding: 10%; margin: auto;">
-                <input type="submit" value="Submit">
+              <div class="submit-container" style="padding: 10%;">
+                <input type="submit" value="Submit" style="margin: auto;">
               </div>
             </form>
           </div>
